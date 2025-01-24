@@ -21,18 +21,6 @@ func ImportData() error { // fetch and import price data from API
 		log.Printf("Provider inserted or already exists: %v", provider.ProviderName)
 	}
 
-	serviceName := "Virtual Machines"
-	service := models.Service{
-		ProviderID:  provider.ProviderID,
-		ServiceName: serviceName,
-	}
-	result = config.DB.Where("service_name = ?", service.ServiceName).FirstOrCreate(&service)
-	if result.Error != nil {
-		return fmt.Errorf("Error inserting service: %v", result.Error)
-	} else {
-		log.Printf("Service inserted or already exists: %v", service.ServiceName)
-	}
-
 	for nextPageLink != "" { // loops through the API's paginated responses
 		// Fetch data from the current page of the price API
 		priceData, err := utils.FetchData(nextPageLink)
@@ -51,14 +39,12 @@ func ImportData() error { // fetch and import price data from API
 			data := item.(map[string]interface{})
 
 			// For region table
-			regionName, _ := data["armRegionName"].(string)
 			regionCode, _ := data["location"].(string)
 
 			// Insert Region if not exists
 			region := models.Region{
 				ProviderID: provider.ProviderID,
 				RegionCode: regionCode,
-				RegionName: regionName,
 			}
 			result = config.DB.Where("region_code = ?", region.RegionCode).FirstOrCreate(&region)
 			if result.Error != nil {

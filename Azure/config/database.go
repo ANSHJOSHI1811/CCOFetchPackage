@@ -12,7 +12,7 @@ import (
 var DB *gorm.DB
 
 func ConnectDatabase() {
-	dsn := "host=localhost user=postgres password=password dbname=cco port=5432 sslmode=disable" // Database connection string
+	dsn := "host=localhost user=postgres password=password dbname=cloudcost port=5432 sslmode=disable" // Database connection string
 	var err error
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -24,7 +24,6 @@ func ConnectDatabase() {
 	err = DB.AutoMigrate(
 		&models.Provider{},
 		&models.Region{},
-		&models.Service{},
 		&models.Sku{},   // Your Sku model
 		&models.Term{},  // Your Term model
 		&models.Price{}, // Your Price model (add all relevant models here)
